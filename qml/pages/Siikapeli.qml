@@ -2,10 +2,7 @@ import QtQuick 2.0
 import Sailfish.Silica 1.0
 import QtSensors 5.0 as Sensors
 import QtMultimedia 5.0 as Media
-//import QtFeedback 5.0 as Feedback
 
-
-// Fish picture courtesy of http://graphicssoft.about.com/od/freedownloads/l/blfreepng07.htm
 
 Page {
     id: page
@@ -27,26 +24,13 @@ Page {
         id: playSiika
         source: "../wavs/kahenkilonsiika.wav"
         // Soundeffect will ALWAYS play with full extra loud volume (even muted)
-        // Dont jump
     }
-
-//    Feedback.HapticsEffect
-//    {
-//        id: rumbleEffect
-//        attackIntensity: 0.0
-//        attackTime: 250
-//        intensity: 1.0
-//        duration: 100
-//        fadeTime: 250
-//        fadeIntensity: 0.0
-//    }
-
 
     Sensors.Accelerometer
     {
         id: accel
         dataRate: 100
-        active: applicationActive
+        active: applicationActive && page.status === PageStatus.Active
 
 
         onReadingChanged:
@@ -75,15 +59,13 @@ Page {
             if (((newX + (bubble.width/2)) > (nami.x - 20)) && ((newX + (bubble.width/2)) < (nami.x + 30)) && (newY > (nami.y - 20)) && (newY < (nami.y + 30)))
             {
 
-                if (siika == 10)
+                if (siika == 10) // siika tuli
                 {
-//                    rumbleEffect.start()
                     playSiika.play()
                     level = level + 1
                 }
-                else        // ei siikaa
+                else        // joku sintti
                 {
-//                    rumbleEffect.start()
                     playSound.play()
                 }
                 bubble.scale = 2
@@ -98,8 +80,6 @@ Page {
                 scoretus.visible =  true
                 scoretus.font.pixelSize = 250
                 timerscoretus.start()
-
-                //info.displayError("Omnomnom " + score)
 
                 namiXa.duration = 0
                 namiYa.duration = 0
@@ -145,63 +125,103 @@ Page {
          return -(Math.atan(x / Math.sqrt(y * y + z * z)) * 57.2957795);
     }
 
-
-    Label
+    SilicaFlickable
     {
-        id: stat
-        anchors.top: page.top
-        anchors.horizontalCenter: page.horizontalCenter
-        text: "Pisteet 0"
+        id: flick
+        anchors.fill: parent
+
+
+          PullDownMenu
+          {
+              MenuItem
+              {
+                  text: "Tietoja..."
+                  onClicked: pageStack.push(Qt.resolvedUrl("TietojaPage.qml"))
+              }
+          }
+
+        Label
+        {
+            id: stat
+            anchors.top: parent.top
+            anchors.horizontalCenter: parent.horizontalCenter
+            text: "Taso " + level + " - Pisteet " + score
+        }
+
+        Image
+        {
+            id: bubble
+            source: "../pics/eketux.png"
+            smooth: true
+            property real centerX: page.width / 2
+            property real centerY: page.height / 2
+            property real bubbleCenter: bubble.width / 2
+            x: centerX - bubbleCenter
+            y: centerY - bubbleCenter
+
+            Behavior on y {
+                SmoothedAnimation {
+                    easing.type: Easing.Linear
+                    duration: 100
+                }
+            }
+
+            Behavior on x {
+                SmoothedAnimation {
+                    easing.type: Easing.Linear
+                    duration: 100
+                }
+            }
+            Behavior on scale {
+                NumberAnimation {
+                    duration: 100
+                    easing.type: Easing.Linear
+                }
+            }
+        }
+
+        Label
+        {
+            id: scoretus
+            text: "huu"
+            anchors.centerIn: parent
+            visible: false
+            Behavior on font.pixelSize {
+                NumberAnimation
+                {
+                    id:scoretusani
+                    duration: 300
+                    easing.type: Easing.Linear
+                }
+            }
+
+        }
+
+        Image
+        {
+            id: nami
+            z: 1 // draw on top of pingu
+            y: randomNumber(30, page.height - bubble.height)
+            x: randomNumber(bubble.width, page.width - bubble.width)
+            source: "../pics/sc-fish0.png"
+            Behavior on y {
+                NumberAnimation {
+                    id: namiYa
+                    duration: 1000
+                    easing.type: Easing.Linear
+                }
+            }
+            Behavior on x {
+                NumberAnimation {
+                    id: namiXa
+                    duration: 1000
+                    easing.type: Easing.Linear
+                }
+            }
+
+        }
     }
 
-    Image
-    {
-        id: bubble
-        source: "../pics/eketux.png"
-        smooth: true
-        property real centerX: page.width / 2
-        property real centerY: page.height / 2
-        property real bubbleCenter: bubble.width / 2
-        x: centerX - bubbleCenter
-        y: centerY - bubbleCenter
-
-        Behavior on y {
-            SmoothedAnimation {
-                easing.type: Easing.Linear
-                duration: 100
-            }
-        }
-
-        Behavior on x {
-            SmoothedAnimation {
-                easing.type: Easing.Linear
-                duration: 100
-            }
-        }
-        Behavior on scale {
-            NumberAnimation {
-                duration: 100
-                easing.type: Easing.Linear
-            }
-        }
-    }
-
-    Label
-    {
-        id: scoretus
-        text: "huu"
-        anchors.centerIn: page
-        visible: false
-        Behavior on font.pixelSize {
-            NumberAnimation
-            {
-                id:scoretusani
-                duration: 300
-                easing.type: Easing.Linear
-            }
-        }
-
-    }
     Timer
     {
         id: timerscoretus
@@ -214,36 +234,12 @@ Page {
         }
     } // Timer
 
-    Image
-    {
-        id: nami
-        z: 1 // draw on top of pingu
-        y: randomNumber(30, page.height - bubble.height)
-        x: randomNumber(bubble.width, page.width - bubble.width)
-        source: "../pics/sc-fish0.png"
-        Behavior on y {
-            NumberAnimation {
-                id: namiYa
-                duration: 1000
-                easing.type: Easing.Linear
-            }
-        }
-        Behavior on x {
-            NumberAnimation {
-                id: namiXa
-                duration: 1000
-                easing.type: Easing.Linear
-            }
-        }
-
-    }
-
 
     Timer
     {
         // vaihtaa kalan paikkaa 1 sek välein
         id: timerkala
-        interval: 1000; running: applicationActive; repeat: true
+        interval: 1000; running: applicationActive  && page.status === PageStatus.Active; repeat: true
         onTriggered:
         {
             if (level > 5)
@@ -290,7 +286,7 @@ Page {
     Timer
     {
         id: timersiika
-        interval: 30000; running: applicationActive;
+        interval: 30000; running: applicationActive  && page.status === PageStatus.Active;
         onTriggered:
         {
         }
@@ -299,3 +295,50 @@ Page {
 
 
 }
+
+/****************************************************************************
+**
+** Fishs picture courtesy of
+** http://graphicssoft.about.com/od/freedownloads/l/blfreepng07.htm
+**
+****************************************************************************/
+
+/****************************************************************************
+**
+** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
+** Contact: http://www.qt-project.org/legal
+**
+** This file is part of the QtSensors module of the Qt Toolkit.
+**
+** $QT_BEGIN_LICENSE:BSD$
+** You may use this file under the terms of the BSD license as follows:
+**
+** "Redistribution and use in source and binary forms, with or without
+** modification, are permitted provided that the following conditions are
+** met:
+**   * Redistributions of source code must retain the above copyright
+**     notice, this list of conditions and the following disclaimer.
+**   * Redistributions in binary form must reproduce the above copyright
+**     notice, this list of conditions and the following disclaimer in
+**     the documentation and/or other materials provided with the
+**     distribution.
+**   * Neither the name of Digia Plc and its Subsidiary(-ies) nor the names
+**     of its contributors may be used to endorse or promote products derived
+**     from this software without specific prior written permission.
+**
+**
+** THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+** "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+** LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+** OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+** SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+** LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+** DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+** THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+** (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+** OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE."
+**
+** $QT_END_LICENSE$
+**
+****************************************************************************/

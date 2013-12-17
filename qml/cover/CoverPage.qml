@@ -35,6 +35,14 @@ CoverBackground {
    Image {
         source: "../pics/sc-fish6.png"
         anchors.centerIn: parent
+        Label
+        {
+            anchors.bottom: parent.top
+            anchors.horizontalCenter: parent.horizontalCenter
+            font.pixelSize: 50
+            text: "Siika"
+        }
+
     }
 }
 

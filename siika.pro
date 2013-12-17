@@ -29,5 +29,6 @@ OTHER_FILES += \
     rpm/harbour-siika.spec \
     harbour-siika.desktop \
     rpm/harbour-siika.yaml \
-    qml/harbour-siika.qml
+    qml/harbour-siika.qml \
+    qml/pages/TietojaPage.qml
 
