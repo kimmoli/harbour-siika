@@ -2,7 +2,7 @@ import QtQuick 2.0
 import Sailfish.Silica 1.0
 import QtSensors 5.0 as Sensors
 import QtMultimedia 5.0 as Media
-import QtFeedback 5.0 as Feedback
+//import QtFeedback 5.0 as Feedback
 
 
 // Fish picture courtesy of http://graphicssoft.about.com/od/freedownloads/l/blfreepng07.htm
@@ -30,16 +30,16 @@ Page {
         // Dont jump
     }
 
-    Feedback.HapticsEffect
-    {
-        id: rumbleEffect
-        attackIntensity: 0.0
-        attackTime: 250
-        intensity: 1.0
-        duration: 100
-        fadeTime: 250
-        fadeIntensity: 0.0
-    }
+//    Feedback.HapticsEffect
+//    {
+//        id: rumbleEffect
+//        attackIntensity: 0.0
+//        attackTime: 250
+//        intensity: 1.0
+//        duration: 100
+//        fadeTime: 250
+//        fadeIntensity: 0.0
+//    }
 
 
     Sensors.Accelerometer
@@ -77,13 +77,13 @@ Page {
 
                 if (siika == 10)
                 {
-                    rumbleEffect.start()
+//                    rumbleEffect.start()
                     playSiika.play()
                     level = level + 1
                 }
                 else        // ei siikaa
                 {
-                    rumbleEffect.start()
+//                    rumbleEffect.start()
                     playSound.play()
                 }
                 bubble.scale = 2
