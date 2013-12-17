@@ -46,7 +46,7 @@ Page {
     {
         id: accel
         dataRate: 100
-        active:true
+        active: applicationActive
 
 
         onReadingChanged:
@@ -243,7 +243,7 @@ Page {
     {
         // vaihtaa kalan paikkaa 1 sek välein
         id: timerkala
-        interval: 1000; running: true; repeat: true
+        interval: 1000; running: applicationActive; repeat: true
         onTriggered:
         {
             if (level > 5)
@@ -290,7 +290,7 @@ Page {
     Timer
     {
         id: timersiika
-        interval: 30000; running: true;
+        interval: 30000; running: applicationActive;
         onTriggered:
         {
         }
