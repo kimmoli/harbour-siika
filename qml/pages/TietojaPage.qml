@@ -64,7 +64,6 @@ Page {
         text: '<html><a href="https://github.com/kimmoli/harbour-siika">github.com/kimmoli/harbour-siika</a></html>'
         onLinkActivated: Qt.openUrlExternally(link)
     }
-
     Image
     {
          source: "../pics/sc-fish6.png"

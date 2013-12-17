@@ -184,6 +184,7 @@ Page {
         {
             id: scoretus
             text: "huu"
+            z: 2 // piirrä päällimmäiseksi
             anchors.centerIn: parent
             visible: false
             Behavior on font.pixelSize {
@@ -200,7 +201,7 @@ Page {
         Image
         {
             id: nami
-            z: 1 // draw on top of pingu
+            z: 1 // piirrä kala pingun päälle
             y: randomNumber(30, page.height - bubble.height)
             x: randomNumber(bubble.width, page.width - bubble.width)
             source: "../pics/sc-fish0.png"
