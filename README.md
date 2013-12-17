@@ -8,6 +8,8 @@ Pingua ohjataan kallistemella puhelinta, tarkoituksena on syödä niin paljon ka
 Mitä enemmän syöt, sitä nopeammiksi saaliit muuttuu.
 Mahdollisesti päivityksissä lisää ominaisuuksia.
 
+**Now waiting that Harbour accepts QtSensors... other bugs should be fixed.**
+
 
 App rejected
 ============
