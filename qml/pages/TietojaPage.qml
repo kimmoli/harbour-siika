@@ -35,6 +35,8 @@ import Sailfish.Silica 1.0
 Page {
     id: page
 
+    property int i: 0
+
     Label
     {
 
@@ -82,17 +84,41 @@ Page {
                   spacing: 5
                   Repeater
                   {
+                      id: pikkukalat
                       model: 6
                       Image
                       {
                           source: "../pics/sc-fish" + index +".png"
+                          Behavior on rotation
+                          {
+                              NumberAnimation
+                              {
+                                  duration: 1500
+                                  easing: Easing.Linear
+                              }
+                          }
                       }
                   }
               }
 
          }
     }
+    Timer
+    {
+        interval: 500
+        running: applicationActive && page.status === PageStatus.Active
+        repeat: true
 
+        onTriggered:
+        {
+            var pikkukala = pikkukalat.itemAt(i)
+            pikkukala.rotation -= 360
+            i++
+            if (i == pikkukalat.count)
+                i = 0
+        }
+
+    }
 
 
 }

@@ -8,13 +8,13 @@ Page {
     id: page
 
     property int score: 0
-    property int siika: 1
+    property int siika: 0
     property int level: 1
 
 
     Media.SoundEffect
     {
-        id: playSound
+        id: playNomNom
         source: "../wavs/nomnom.wav"
         //    Audio allows to use system volume
     }
@@ -35,74 +35,85 @@ Page {
 
         onReadingChanged:
         {
-            var newX = (bubble.x + calcRoll(accel.reading.x, accel.reading.y, accel.reading.z) * .1)
-            var newY = (bubble.y - calcPitch(accel.reading.x, accel.reading.y, accel.reading.z) * .1)
+            var newX = (pingu.x + calcRoll(accel.reading.x, accel.reading.y, accel.reading.z) * .1)
+            var newY = (pingu.y - calcPitch(accel.reading.x, accel.reading.y, accel.reading.z) * .1)
 
 
             if (newX < 0)
                 newX = 0
 
-            if (newX > page.width - bubble.width)
-                newX = page.width - bubble.width
+            if (newX > page.width - pingu.width)
+                newX = page.width - pingu.width
 
             if (newY < 18)
                 newY = 18
 
-            if (newY > page.height - bubble.height)
-                newY = page.height - bubble.height
+            if (newY > page.height - pingu.height)
+                newY = page.height - pingu.height
 
-                bubble.x = newX
-                bubble.y = newY
+                pingu.x = newX
+                pingu.y = newY
 
             stat.text = "Taso " + level + " - Pisteet " + score
 
-            if (((newX + (bubble.width/2)) > (nami.x - 20)) && ((newX + (bubble.width/2)) < (nami.x + 30)) && (newY > (nami.y - 20)) && (newY < (nami.y + 30)))
+            if (((newX + (pingu.width/2)) > (kala.x)) &&
+                ((newX + (pingu.width/2)) < (kala.x + kala.width)) &&
+                ((newY + 20) > (kala.y)) &&
+                ((newY + 20) < (kala.y + kala.height)))
             {
-
-                if (siika == 10) // siika tuli
+                timerKala.stop()
+                if (siika) // siika tuli
                 {
                     playSiika.play()
                     level = level + 1
                 }
                 else        // joku sintti
                 {
-                    playSound.play()
+                    playNomNom.play()
                 }
-                bubble.scale = 2
-                timerlamppu.start()
-                var kala = Math.floor(nami.scale * 10) * siika
-                score = score + kala
-                if (siika == 10)
-                    scoretus.text = "TASO " + level
-                else
-                    scoretus.text = kala
+                pingu.scale = 2
+                timerPalauta.start()
+                var pisteetKalasta = Math.floor(kala.scale * 10) + (99*siika)
+                score = score + pisteetKalasta
+
                 scoretusani.duration = 400
                 scoretus.visible =  true
-                scoretus.font.pixelSize = 250
-                timerscoretus.start()
-
-                namiXa.duration = 0
-                namiYa.duration = 0
-
-                nami.x = randomNumber(bubble.width, page.width - bubble.width)
-                if (nami.y < page.height/2) // ylempi puolikas, seuraava alas
-                    nami.y = randomNumber(page.height/2, page.height - bubble.height)
-                else
-                    nami.y = randomNumber(30, page.height/2)
-
-                if (timersiika.running)
+                if (siika)
                 {
-                    nami.source = "../pics/sc-fish" + randomNumber(0,5) +".png"
-                    nami.scale = 1 + (randomNumber(0,10)/10)
-                    siika = 1
+                    scoretus.text = "TASO " + level
+                    scoretus.font.pixelSize = 175
+                }
+                else
+                {
+                    scoretus.text = pisteetKalasta
+                    scoretus.font.pixelSize = 250
+                }
+
+                timerScoretus.start()
+
+                kalaXa.duration = 0
+                kalaYa.duration = 0
+
+                kala.x = randomNumber(pingu.width, page.width - pingu.width)
+                if (kala.y < page.height/2) // ylempi puolikas, seuraava alas
+                    kala.y = randomNumber(page.height/2, page.height - pingu.height)
+                else
+                    kala.y = randomNumber(30, page.height/2)
+
+                if (timerSiika.running)
+                {
+                    kala.source = "../pics/sc-fish" + randomNumber(0,5) +".png"
+                    kala.scale = 1 + (randomNumber(0,10)/10)
+                    siika = 0
                 }
                 else // kahen kilon siika seuraavaksi
                 {
-                    nami.source = "../pics/sc-fish6.png"
-                    nami.scale = 1
-                    siika = 10
-                    timersiika.restart()
+                    kala.source = "../pics/sc-fish6.png"
+                    kala.scale = 1
+                    siika = 1
+                    timerSiika.restart()
                 }
+                timerKala.restart()
 
             }
 
@@ -144,20 +155,21 @@ Page {
         {
             id: stat
             anchors.top: parent.top
+            anchors.topMargin: 3
             anchors.horizontalCenter: parent.horizontalCenter
             text: "Taso " + level + " - Pisteet " + score
         }
 
         Image
         {
-            id: bubble
+            id: pingu
             source: "../pics/eketux.png"
             smooth: true
             property real centerX: page.width / 2
             property real centerY: page.height / 2
-            property real bubbleCenter: bubble.width / 2
-            x: centerX - bubbleCenter
-            y: centerY - bubbleCenter
+            property real pinguCenter: pingu.width / 2
+            x: centerX - pinguCenter
+            y: centerY - pinguCenter
 
             Behavior on y {
                 SmoothedAnimation {
@@ -192,7 +204,7 @@ Page {
                 {
                     id:scoretusani
                     duration: 300
-                    easing.type: Easing.Linear
+                    easing.type: Easing.OutQuad
                 }
             }
 
@@ -200,23 +212,25 @@ Page {
 
         Image
         {
-            id: nami
+            id: kala
             z: 1 // piirrä kala pingun päälle
-            y: randomNumber(30, page.height - bubble.height)
-            x: randomNumber(bubble.width, page.width - bubble.width)
+            y: randomNumber(30, page.height - pingu.height)
+            x: randomNumber(pingu.width, page.width - pingu.width)
             source: "../pics/sc-fish0.png"
             Behavior on y {
-                NumberAnimation {
-                    id: namiYa
+                SmoothedAnimation {
+                    id: kalaYa
                     duration: 1000
-                    easing.type: Easing.Linear
+                    velocity: 1
+                    easing.type: Easing.OutInQuad
                 }
             }
             Behavior on x {
-                NumberAnimation {
-                    id: namiXa
+                SmoothedAnimation {
+                    id: kalaXa
                     duration: 1000
-                    easing.type: Easing.Linear
+                    velocity: 1
+                    easing.type: Easing.OutInQuad
                 }
             }
 
@@ -225,7 +239,8 @@ Page {
 
     Timer
     {
-        id: timerscoretus
+        // piilottaa kalasta saadut pisteet
+        id: timerScoretus
         interval: scoretusani.duration; running: false;
         onTriggered:
         {
@@ -233,60 +248,66 @@ Page {
             scoretusani.duration = 1
             scoretus.font.pixelSize = 1
         }
-    } // Timer
+    }
 
 
     Timer
     {
         // vaihtaa kalan paikkaa 1 sek välein
-        id: timerkala
-        interval: 1000; running: applicationActive  && page.status === PageStatus.Active; repeat: true
+        // pyörii aina kun sivu aktiivinen
+        id: timerKala
+        interval: (level > 5) ? 500 : 1000
+        running: applicationActive  && page.status === PageStatus.Active
+        repeat: true
+
         onTriggered:
         {
-            if (level > 5)
-            {
-                namiXa.duration = 500
-                namiYa.duration = 500
-            }
-            else
-            {
-                namiXa.duration = 1000
-                namiYa.duration = 1000
-            }
+            // Kala liikkuu koko ajan
+            // tämä pitää palauttaa koska nollattiin kun kala syötiin
+            kalaXa.duration = kalaYa.duration = timerKala.interval
+
             // tee vain pieni liike kerrallaan, suurenna liikettä vaikeustason kasvaessa
             var siirtymä = 100+(level*100)
-            var nx = nami.x + (randomNumber(0,siirtymä)-(siirtymä/2))
-            var ny = nami.y + (randomNumber(0,siirtymä)-(siirtymä/2))
+            var siirtymäX = randomNumber(0,siirtymä)-(siirtymä/2)
+            var siirtymäY = randomNumber(0,siirtymä)-(siirtymä/2)
+            var nx = kala.x + siirtymäX
+            var ny = kala.y + siirtymäY
 
-            if (nx < bubble.width)
-                nx = bubble.width
-            if (nx > (page.width - bubble.width))
-                nx = (page.width - bubble.width)
+            // Siirry suoraan, ei mutkitella -- velocity = units/second
+            kalaXa.velocity = (level > 5) ? (2*Math.abs(siirtymäX)) : Math.abs(siirtymäX)
+            kalaYa.velocity = (level > 5) ? (2*Math.abs(siirtymäY)) : Math.abs(siirtymäY)
+
+            if (nx < pingu.width/2)
+                nx = pingu.width/2
+            if (nx > (page.width - pingu.width/2))
+                nx = (page.width - pingu.width/2)
             if (ny < 30)
                 ny = 30
-            if (ny > (page.height - bubble.height))
-                ny = (page.height - bubble.height)
+            if (ny > (page.height - pingu.height))
+                ny = (page.height - pingu.height)
 
-            nami.mirror = (nx > nami.x)
+            kala.mirror = (nx > kala.x)
 
-            nami.x = nx
-            nami.y = ny
+            kala.x = nx
+            kala.y = ny
         }
-    } // Timer
+    }
 
     Timer
     {
-        id: timerlamppu
+        // Palauttaa pingun oikean kokoiseksi kalan syönnin jälkeen
+        id: timerPalauta
         interval: 100; running: false;
         onTriggered:
         {
-            bubble.scale = 1
+            pingu.scale = 1
         }
-    } // Timer
+    }
 
     Timer
     {
-        id: timersiika
+        // Siika tulee 30 sekunnin välein
+        id: timerSiika
         interval: 30000; running: applicationActive  && page.status === PageStatus.Active;
         onTriggered:
         {
