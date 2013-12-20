@@ -8,12 +8,21 @@ Pingua ohjataan kallistemella puhelinta, tarkoituksena on syödä niin paljon ka
 Mitä enemmän syöt, sitä nopeammiksi saaliit muuttuu.
 Mahdollisesti päivityksissä lisää ominaisuuksia.
 
-**Now waiting that Harbour accepts QtSensors... other bugs should be fixed.**
 
 
-App rejected
+App rejected (again)
 ============
+Reason for rejection: The application does not respond to volume control. In the phone the volume is muted, but in the application is not muted. 
 
+
+SoundEffect might have a bug, it does not adjust volume by device volume.
+Changed now to Audio which does. It makes a glitch in animation after playing is completed. (another bug?)
+
+
+
+
+
+-------------------
 
 Reason for rejection: I have to reject you application based on the following information:
 
