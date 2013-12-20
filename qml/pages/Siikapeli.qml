@@ -12,18 +12,16 @@ Page {
     property int level: 1
 
 
-    Media.SoundEffect
+    Media.Audio
     {
         id: playNomNom
         source: "../wavs/nomnom.wav"
-        //    Audio allows to use system volume
     }
 
-    Media.SoundEffect
+    Media.Audio
     {
         id: playSiika
         source: "../wavs/kahenkilonsiika.wav"
-        // Soundeffect will ALWAYS play with full extra loud volume (even muted)
     }
 
     Sensors.Accelerometer
