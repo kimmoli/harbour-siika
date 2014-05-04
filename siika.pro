@@ -28,7 +28,15 @@ OTHER_FILES += \
     qml/pages/Siikapeli.qml \
     rpm/harbour-siika.spec \
     harbour-siika.desktop \
-    rpm/harbour-siika.yaml \
     qml/harbour-siika.qml \
-    qml/pages/TietojaPage.qml
+    qml/pages/TietojaPage.qml \
+    qml/components/TimedItem.qml \
+    qml/components/Monja.qml \
+    qml/components/Explosion.qml \
+    qml/components/Bubbles.qml \
+    qml/pics/tynnyri.png \
+    qml/pics/explosion_red.png \
+    qml/pics/explosion_black.png \
+    qml/sounds/boom.wav \
+    qml/pics/kupla.png
 

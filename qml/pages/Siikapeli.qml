@@ -3,6 +3,7 @@ import Sailfish.Silica 1.0
 import QtSensors 5.0 as Sensors
 import QtMultimedia 5.0 as Media
 
+import "../components"
 
 Page {
     id: page
@@ -54,6 +55,13 @@ Page {
 
             stat.text = "Taso " + level + " - Pisteet " + score
 
+            // Mönjässä
+            if (newY > page.height - (pingu.height/3) - monja.level)
+            {
+                bubbleTimer.restart()
+                if (score > 0) score--
+            }
+
             if (((newX + (pingu.width/2)) > (kala.x)) &&
                 ((newX + (pingu.width/2)) < (kala.x + kala.width)) &&
                 ((newY + 20) > (kala.y)) &&
@@ -64,6 +72,7 @@ Page {
                 {
                     playSiika.play()
                     level = level + 1
+                    monja.level = 0
                 }
                 else        // joku sintti
                 {
@@ -134,6 +143,24 @@ Page {
          return -(Math.atan(x / Math.sqrt(y * y + z * z)) * 57.2957795);
     }
 
+    Timer
+    {
+        id: wasteTimer
+        running: true
+        repeat: true
+        interval: 4567
+        //triggeredOnStart: true
+        onTriggered:
+        {
+            var x = waste
+            x.xCord = randomNumber(x.itemWidth/2, page.width - x.itemWidth/2)
+            x.yCord = randomNumber(x.itemHeight/2, page.height - x.itemHeight/2)
+            x.enableItem()
+            console.log(x.toString() + " x " + x.xCord + " y " + x.yCord)
+            wasteTimer.interval = randomNumber(4567, 12345)
+        }
+    }
+
     SilicaFlickable
     {
         id: flick
@@ -156,6 +183,57 @@ Page {
             anchors.topMargin: 3
             anchors.horizontalCenter: parent.horizontalCenter
             text: "Taso " + level + " - Pisteet " + score
+        }
+
+        Timer
+        {
+            id: bubbleTimer
+            interval: 3000
+            running: false
+        }
+
+        Bubbles
+        {
+            id: bubbles
+            numberOfBubbles: 25
+            makeBubbles: bubbleTimer.running
+
+            width: page.width
+            height: page.height
+        }
+
+
+        Monja
+        {
+            id: monja
+            z: 4
+        }
+
+        Explosion
+        {
+            id: explosion
+        }
+
+        TimedItem
+        {
+            id: waste
+            source: "../pics/tynnyri.png"
+            timeToClick: 1500
+            fallsToBottom: true
+            fallsTo: page.height - (waste.itemHeight/2)
+            onItemClicked:
+            {
+                explosion.xCord = waste.itemX()
+                explosion.yCord = waste.itemY()
+                explosion.blowUp()
+                console.log("tynnyrin klikkaus perille")
+                score += 1000
+            }
+            onItemExpired:
+            {
+                monja.level += 50
+                console.log("tynnyri ei ehtinyt")
+            }
         }
 
         Image
@@ -277,8 +355,8 @@ Page {
 
             if (nx < pingu.width/2)
                 nx = pingu.width/2
-            if (nx > (page.width - pingu.width/2))
-                nx = (page.width - pingu.width/2)
+            if (nx > (page.width - pingu.width/2 - kala.width/2))
+                nx = (page.width - pingu.width/2 - kala.width/2)
             if (ny < 30)
                 ny = 30
             if (ny > (page.height - pingu.height))

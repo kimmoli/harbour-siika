@@ -1,0 +1,2 @@
+.gitattributes
+*.spec text eol=lf

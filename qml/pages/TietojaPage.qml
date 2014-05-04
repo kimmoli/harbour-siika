@@ -50,7 +50,7 @@ Page {
     {
         y: 160
         anchors.horizontalCenter: parent.horizontalCenter
-        text: "made by kimmoli 2013"
+        text: "made by kimmoli 2013-2014"
     }
     Label
     {
